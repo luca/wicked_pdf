@@ -7,7 +7,12 @@ module WickedPdfHelper
   end
 
   def wicked_pdf_image_tag(img, options={})
-    image_tag "file://#{Rails.root.join('public', 'images', img)}", options
+    if img[0].chr == "/" # images with absolute path (e.g. from paperclip or carrierwave)
+      new_image = img.slice 1..-1
+      image_tag "file://#{Rails.root.join('public', new_image)}", options
+    else
+      image_tag "file://#{Rails.root.join('public', 'images', img)}", options
+    end
   end
 
   def wicked_pdf_javascript_src_tag(jsfile, options={})
