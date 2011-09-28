@@ -51,10 +51,14 @@ module PdfHelper
     end
 
     def make_pdf(options = {})
+      old_formats = formats
+      self.formats = [:html] # hack so partials resolve with html
       html_string = render_to_string(:template => options[:template], :layout => options[:layout])
       options = prerender_header_and_footer(options)
       w = WickedPdf.new(options[:wkhtmltopdf])
       w.pdf_from_string(html_string, options)
+    ensure
+      self.formats = old_formats 
     end
 
     def make_and_send_pdf(pdf_name, options={})
